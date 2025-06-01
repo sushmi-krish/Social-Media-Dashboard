@@ -10,7 +10,7 @@ const SECRET_KEY = 'your_secret_key';
 
 mongoose.set('strictQuery', false);
 
-const uri =  "mongodb://root:jVOC883rHJHk338bltrln1Ix@172.21.63.253";
+const uri =  "mongodb://root:cUvedV7NJfzXUwgFj2rFAtxX@172.21.57.136";
 mongoose.connect(uri,{'dbName':'SocialDB'});
 
 const User = mongoose.model('User', { username: String, email: String, password: String });
@@ -49,7 +49,7 @@ function authenticateJWT(req,res,next){
 function requireAuth(req, res, next){
     const token = req.session.token; //Retrive token
 
-    if(token) return res.redirect('/login') //If no token ,redirect to login page
+    if(!token) return res.redirect('/login') //If no token ,redirect to login page
 
     try{
         const decoded = jwt.verify(token,SECRET_KEY);//verify the secret key by using token
@@ -63,7 +63,7 @@ function requireAuth(req, res, next){
 
 //routing HTML files.
 
-app.get('/',(res,req)=>res.sendFile(path.json(__dirname,'public','index.html')));
+app.get('/',(req,res)=>res.sendFile(path.json(__dirname,'public','index.html')));
 app.get('/register',(req,res)=> res.sendFile(path.json(__dirname,'public','register.html')))
 app.get('/login',(req,res)=> res.sendFile(path.json(__dirname,'public','logic.html')));
 app.get('/post',requireAuth,(req,res)=>res.sendFile(path.join(__dirname,'public','post.html')));
@@ -88,7 +88,7 @@ app.post('/register', async(req, res)=>{
         req.session.token = token;
 
         //Respond with success message
-        res.send({"message":"The user ${username} has been added"});
+        res.send({message:`The user ${username} has been added`});
     }catch(error){
         console.log(error);
         //Handle the errors;
@@ -103,7 +103,7 @@ app.post('/login',async(req,res)=>{
         //Check if the user exits with the provided Credentials
         const user = await User.findOne({username,password});
 
-        if(!user) return(401).json({message:'Invaild credentials'});
+        if(!user) return res.status(401).json({message:'Invaild credentials'});
 
         //Generate JWT token and store in session 
         const token = jwt.sign({userId: user._id,username:user.username},SECRET_KEY,{expiresIn: '1h'})
