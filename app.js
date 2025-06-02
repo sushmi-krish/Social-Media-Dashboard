@@ -63,9 +63,9 @@ function requireAuth(req, res, next){
 
 //routing HTML files.
 
-app.get('/',(req,res)=>res.sendFile(path.json(__dirname,'public','index.html')));
-app.get('/register',(req,res)=> res.sendFile(path.json(__dirname,'public','register.html')))
-app.get('/login',(req,res)=> res.sendFile(path.json(__dirname,'public','logic.html')));
+app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.get('/register',(req,res)=> res.sendFile(path.join(__dirname,'public','register.html')))
+app.get('/login',(req,res)=> res.sendFile(path.join(__dirname,'public','logic.html')));
 app.get('/post',requireAuth,(req,res)=>res.sendFile(path.join(__dirname,'public','post.html')));
 app.get('/index', requireAuth, (req,res)=>res.sendFile(path.join(__dirname,'public','index.html'),{username: req.user.username}));
 
@@ -88,7 +88,7 @@ app.post('/register', async(req, res)=>{
         req.session.token = token;
 
         //Respond with success message
-        res.send({message:`The user ${username} has been added`});
+         res.redirect(`/index?username=${newUser.username}`);
     }catch(error){
         console.log(error);
         //Handle the errors;
@@ -109,8 +109,8 @@ app.post('/login',async(req,res)=>{
         const token = jwt.sign({userId: user._id,username:user.username},SECRET_KEY,{expiresIn: '1h'})
         req.session.token = token;
 
-        //Respond with the success mesage 
-        res.send({"mess":`${user.username} has logged in successfully`})
+        //Respond with the success message 
+    res.redirect(`/index?username=${user.username}`);
     } catch(error){
         console.log(error);
         //Handle the server error 
