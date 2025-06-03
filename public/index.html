@@ -72,7 +72,7 @@
         </header>
 
         <h1>Welcome to the Social Media Dashboard App</h1>
-        <p id="  welcomeMessage">Explore and manage your social media accounts in one place .</p>
+        <p id="welcomeMessage">Explore and manage your social media accounts in one place .</p>
 
         <div class = "app-names">
             <div>FaceSnap</div>
@@ -84,7 +84,7 @@
 
         <script>
             function getUsernameFromURL(){
-                return new URLsearchParams(window.location.search).get('username');
+                return new URLSearchParams(window.location.search).get('username');
             }
 
             function handleAuthentication()
@@ -101,7 +101,7 @@
                     loginBtn.style.display = 'none';
                     logoutBtn.style.display = 'inline-block';
                     createPostBtn.style.display ='inline-block';
-                    welcomeMessage.innerText = `Welcome,${username}!`;
+                    welcomeMessage.innerText = `Welcome, ${username}!`;
                 } 
                 else 
                 {

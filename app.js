@@ -10,7 +10,7 @@ const SECRET_KEY = 'your_secret_key';
 
 mongoose.set('strictQuery', false);
 
-const uri =  "mongodb://root:cUvedV7NJfzXUwgFj2rFAtxX@172.21.57.136";
+const uri =  "mongodb://root:rkD60QriixlSesY8IOL3Sy3U@172.21.228.64";
 mongoose.connect(uri,{'dbName':'SocialDB'});
 
 const User = mongoose.model('User', { username: String, email: String, password: String });
@@ -65,7 +65,7 @@ function requireAuth(req, res, next){
 
 app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
 app.get('/register',(req,res)=> res.sendFile(path.join(__dirname,'public','register.html')))
-app.get('/login',(req,res)=> res.sendFile(path.join(__dirname,'public','logic.html')));
+app.get('/login',(req,res)=> res.sendFile(path.join(__dirname,'public','login.html')));
 app.get('/post',requireAuth,(req,res)=>res.sendFile(path.join(__dirname,'public','post.html')));
 app.get('/index', requireAuth, (req,res)=>res.sendFile(path.join(__dirname,'public','index.html'),{username: req.user.username}));
 
@@ -135,7 +135,7 @@ try{
 }catch(error){
     console.log(error)
 //Handle the error 
-res.status(400).json({message:'Internal storage Error'})
+res.status(400).json({message:'Internal Service Error'})
 }
 
 });
@@ -154,7 +154,7 @@ app.get('/posts', authenticateJWT, async(req,res)=>{
 });
 
 //post updation 
-app.put('/posts/postId',authenticateJWT,async(req,res)=>{
+app.put('/posts/:postId',authenticateJWT,async(req,res)=>{
     const postId = req.params.postId;
     const{text} = req.body;
 
@@ -183,12 +183,12 @@ app.delete('/posts/:postId', authenticateJWT, async(req,res)=>{
 
     try{
         //Find and delete the post , ensuring it's owned by the suthenticated user
-        const post = await Post.findByIdAndDelete({_id:postId, userId: req.user.userId})
+        const post = await Post.findOneAndDelete({_id:postId, userId: req.user.userId})
 
         //Return error if post not found
         if(!post) return res.status(404).json({message:'Page Not Found'});
 
-        res.json({messgae:'Post deletd successfully', deletedPost: post});
+        res.json({message:'Post deletd successfully', deletedPost: post});
     }catch(error){
         console.log(error);
         res.status(500).json({message: `Internal Service Error`})

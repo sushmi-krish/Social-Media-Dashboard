@@ -1,8 +1,8 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8"
-        <meta name="viewpot" content="width=device-width,initial-scale=1.0">
+        <meta charset="UTF-8"/>
+        <meta name="viewpot" content="width=device-width,initial-scale=1.0"/>
         <title>Login</title>
         <style>
             body{
@@ -31,8 +31,11 @@
             .auth-form input {
                 width:100%;
                 padding:10px;
-                margin-bottom:8px;
-                font-weight:bold;
+                margin-bottom:15px;
+                border:1px solid #ccc;
+                border-radius: 5px;
+                box-sizing:border-box;
+                
             }
             .auth-form button{
                 background-color:#0077cc;
@@ -43,12 +46,24 @@
                 cursor:pointer;
             }
             .auth-form button:hover{
-                text-decoration:underline
+                background-color:#005faa
+            }
+            p{
+                margin-top:20px;
+                font-size:1.2em;
+            }
+            p a{
+                color: #0077cc;
+                font-weight: bold;
+                text-decoration: none;
+            }
+            p a:hover{
+                text-decoration:underline;
             }
             </style>
             </head>
             <body>
-                <div class="conatiner">
+                <div class="container">
                     <h1>Login</h1>
                     <form action="/login" method= "post" class="auth-form">
                         <label for="username">Username:</label>

@@ -104,9 +104,9 @@
 
     <h1>Create and Manage Posts</h1>
 
-    <div class="Post-form">
+    <div class="post-form">
         <label for="text">Creat a new post:</label>
-        <textarea id="text" name="text" row="4" required></textarea>
+        <textarea id="text" name="text" rows="4" required></textarea>
         <button onclick="createPost()">Create Post</button>
     </div>
 
@@ -114,34 +114,37 @@
     <div class="pagination" id="pagination"></div>
     <script>
       const postsPerPage = 3;
-      let currentPage=1;
+      let currentPage = 1;
 
       //On Page load,fetch the posts 
-      document.addEventListener('DOMContenLoaded',()=>{
+      document.addEventListener('DOMContentLoaded',()=>{
         getPosts();
       });
 
-      //Create the Post
+      //Create a new Post
        async function createPost() {
         const text = document.getElementById('text').value;
         if(!text) return alert('Post text cannot be empty');
 
         try{
-          const  response = await fetch('/Post',{
+          const  response = await fetch('/post',{
             method: "POST",
-            headers: {'Content-Type':'application/json'},
+            headers: {'Content-Type': 'application/json' },
             body: JSON.stringify({text})
           });
-          const data = await respose.json();
+
+          const data = await response.json();
+
           if(response.ok){
             document.getElementById('text').value = '';
-            currentPage =1;//Reset to first page after new post
+            currentPage = 1;//Reset to first page after new post
             getPosts()//Refresh list
-          }else{
+          } else {
             alert(data.message);
 
           }
-        }catch(error){
+        } catch(error)
+        {
           console.error('Error:',error);
           alert('Error creating post');
         }
@@ -172,7 +175,7 @@
            const pagination = document.getElementById('pagination');
            postList.innerHTML ='';
             
-           if(postList .length === 0){
+           if(posts .length === 0){
             postList.innerHTML = '<p> No Posts available</p>';
             pagination.innerHTML='';
             return;
@@ -185,7 +188,7 @@
 
            //Reader Post for the current page
 
-            paginatedPosts.forEach(posts => {
+            paginatedPosts.forEach(post => {
 
               const postDiv = document.createElement('div');
               postDiv.className ='post';
@@ -212,16 +215,17 @@
               postDiv.appendChild(deleteButton);
               postList.appendChild(postDiv);
               });
+
            //create a pagination button
 
            const totalpages = Math.ceil(posts.length / postsPerPage);
            pagination.innerHTML ='';
-           for(let i=1; i<=totalpages;i++){
+           for(let i=1; i <= totalpages; i++) {
             const pageButton = document.createElement('button');
             pageButton.textContent = i;
             pageButton.onclick =()=>{
               currentPage = i;
-              renderPosts(posts)
+              renderPosts(posts);
             };
             //Hightlight the active page button
             if(i === currentPage){
@@ -232,23 +236,24 @@
         }
 //Promt editing and then update the post 
 function editPost(post){
-  const newText = prompt('Edit your Post:',post.text);
-  if(newText != null && newText != post.text){
+  const newText = prompt('Edit your Post:', post.text);
+  if(newText != null && newText != post.text) {
     updatePost(post._id,newText);
   }
 }
+
 //Update a post via API
 async function updatePost(postId, text){
   try{
-    const  response = await fetch ('/posts/${postId}',{
+    const  response = await fetch (`/posts/${postId}`, {
       method : 'PUT',
        headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ text })
     });
     const data = await response.json();
-    if(response.ok){
+    if(response.ok) {
       getPosts();//Refresh list
-    }else{
+    } else {
       alert(data.message);
     }
   }catch(error){
@@ -258,7 +263,23 @@ async function updatePost(postId, text){
 }
 
 //Delete the post via with API
+async function deletePost(postId){
+    try{
+        const response = await fetch(`/posts/${postId}`,{method: 'DELETE'});
+        const data = await response.json();
+        if(response.ok){
+            getPosts();
+        } else {
+            alert(data.message);
+        }
+    } catch (error){
+        console.error('Error:', error);
+        alert('Error deleting post');
+    }
+}
 
+
+//Logout by redirecting to the logout endpoint
 function logout(){
   window.location.href='/logout';
   
